@@ -10,9 +10,9 @@ def generate_populations(memory_pattern):
     '''Returns populations and neurons in each population'''
     return np.unique(memory_pattern, axis=0, return_counts=True)
 
-def generate_proto_conn_matrix(pops, exct_param, num_neurons, f):
+def generate_proto_conn_matrix(pops, exct_param, f):
     '''Return a prototype connection matrix without inhibition'''
-    return exct_param / num_neurons * (pops - f) @ (pops - f).T
+    return exct_param * (pops - f) @ (pops - f).T
 
 def generate_inhibition_seq(phi_min, phi_max, t_period, time_seq, phase=0):
     '''Returns a series of inhibition phi'''
