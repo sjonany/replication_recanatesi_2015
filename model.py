@@ -64,14 +64,14 @@ class RecallModel:
     for j in range(NUM_MEMORIES):
         self.pops_of_memory[j] = list(np.where(self.pops[:,j]==1)[0])
 
-  def run(self, init_mem):
+  def run(self, init_mem, seed=-1):
     """
     Run one simulation of cycling inhibition, starting with init_mem
 
     Return: average firing rates per memory over time.
       This matrix has dimension [NUM_MEMORY] x [TOTAL_TIMESTEP]
     """
-
+    set_seed(seed)
     time_seq = np.arange(0, TOTAL_TIME, TIME_STEP)
     phi_seq = generate_inhibition_seq(PHI_MIN, PHI_MAX, OSCILLATION_TIME, time_seq)
 
@@ -104,14 +104,16 @@ class RecallModel:
 
     return avg_firing_rates
 
-def generate_memories(num_neurons, num_memories, f, seed = -1):
+def set_seed(seed):
   if seed < 0:
     # Reset the seed
     np.random.seed()
   else:
     # Fix the seed
     np.random.seed(seed)
-  '''Returns num_neurons by num_memories matrix'''
+
+def generate_memories(num_neurons, num_memories, f, seed = -1):
+  set_seed(seed)
   return np.random.choice(a=[0, 1], 
                             size=(num_neurons, num_memories),
                             p=[1-f, f])

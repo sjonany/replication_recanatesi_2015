@@ -12,7 +12,7 @@ import sys
 
 # For each memory  used as a starting point, repeat this much
 REPS_PER_MEMORY = 20
-PATH_TO_DUMP = "sequences/seq_default.txt"
+PATH_TO_DUMP = "sequences/seq_default_2.txt"
 ALLOW_APPEND = True
 DELIMITER = ","
 
