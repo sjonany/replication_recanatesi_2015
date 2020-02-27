@@ -24,9 +24,8 @@ class RecallModel:
   """
   Model of free recall.
   Each run will produce average firing rates per memory over time, which
-  can then be post-processed by helpers.py > rates_to_single_memories() to get
+  can then be post-processed by helpers.py > mem_activities_to_single_mem_transitions() to get
   the sequence of single memory recalls. 
-  TODO(sjoe): Implement postprocessing
   Usage:
     model = RecallModel()
     # This creates the passive connectome
@@ -35,6 +34,8 @@ class RecallModel:
     avg_firing_rates_per_memory_run1 = model.run(init_mem = 3)
     avg_firing_rates_per_memory_run2 = model.run(init_mem = 4)
 
+    # This gives you an array of 16 elements - the single memory recalls.
+    mem_activities_to_single_mem_transitions(avg_firing_rates_per_memory_run1)
   """
   def init(self):
     """
