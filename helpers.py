@@ -1,4 +1,5 @@
 import numpy as np
+import pdb
 
 def mem_activities_to_single_mem_transitions(mem_activities):
   """

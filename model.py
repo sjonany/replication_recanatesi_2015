@@ -26,6 +26,8 @@ class RecallModel:
   Each run will produce average firing rates per memory over time, which
   can then be post-processed by helpers.py > mem_activities_to_single_mem_transitions() to get
   the sequence of single memory recalls. 
+  If seed is provided with a non-zero value, you will have a fixed eta matrix.
+  Otherwise, the eta matrix will be random
   Usage:
     model = RecallModel()
     # This creates the passive connectome
@@ -37,13 +39,13 @@ class RecallModel:
     # This gives you an array of 16 elements - the single memory recalls.
     mem_activities_to_single_mem_transitions(avg_firing_rates_per_memory_run1)
   """
-  def init(self):
+  def init(self, seed=-1):
     """
     Generate memory patterns and passive connectome
     """
     # Generate memories and populations
     # memory_pattern = The eta matrix. Eta[i][j] = 1 iff ith neuron is recruited by jth memory
-    self.memory_pattern = generate_memories(NUM_NEURONS, NUM_MEMORIES, SPARSITY)
+    self.memory_pattern = generate_memories(NUM_NEURONS, NUM_MEMORIES, SPARSITY, seed)
     # pops = A boolean matrix of size [num_encoding_patterns] by [number of memories].  
     # Each row is a single memory encoding pattern, which neurons are grouped by.
     
@@ -102,7 +104,13 @@ class RecallModel:
 
     return avg_firing_rates
 
-def generate_memories(num_neurons, num_memories, f):
+def generate_memories(num_neurons, num_memories, f, seed = -1):
+  if seed < 0:
+    # Reset the seed
+    np.random.seed()
+  else:
+    # Fix the seed
+    np.random.seed(seed)
   '''Returns num_neurons by num_memories matrix'''
   return np.random.choice(a=[0, 1], 
                             size=(num_neurons, num_memories),
