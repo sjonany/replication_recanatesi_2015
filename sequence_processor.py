@@ -20,6 +20,11 @@ def read_sequence_file(file):
   with open(file, "r") as f:
     line = f.readline()
     while line:
+      stripped_line = line.strip()
+      if len(stripped_line) == 0:
+        line = f.readline()
+        continue
+
       seq = list(map(int, line.strip().split(DELIMITER)))
       seqs.append(seq)
       line = f.readline()
