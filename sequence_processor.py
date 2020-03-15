@@ -30,7 +30,7 @@ def read_sequence_file(file):
       line = f.readline()
   return seqs
 
-def compute_n_order_markov(n, seqs):
+def compute_n_order_markov(n, seqs, pseudocount=0):
   """
   Compute nth-order markov transition probabilities from given sequences.
   Usage:
@@ -40,6 +40,10 @@ def compute_n_order_markov(n, seqs):
     # Note the order. When we read 3,1 left to right, that is the past sequence in 
     # recall order.
     # The above returns a scalar, akin to Pr(St = 0 | St-2 = 3, St-1 = 1)
+  We initially assume that we have seen all sequences, "pseudocount" times.
+    See "additive smoothing" for more readings.
+    This helps us avoid getting P(transition) = 1's for higher markovian orders where
+    getting the exact same sequences is very rare.
   """
   # transition_tally[(3,1)] returns an array of numbers of size num_memories
   # If the returned array at index 0 is 100, this means we see the sequence [3, 1, 0] 100 times
@@ -57,8 +61,8 @@ def compute_n_order_markov(n, seqs):
   markov_table = defaultdict(lambda: np.array([0] * model.NUM_MEMORIES, dtype=np.float64))
   for past_mems in transition_tally.keys():
     normalizer = sum(transition_tally[past_mems])
-    markov_table[past_mems] = transition_tally[past_mems] / normalizer
-
+    markov_table[past_mems] = 1.0 * (transition_tally[past_mems] + pseudocount) / \
+        (normalizer + pseudocount * model.NUM_MEMORIES)
   return markov_table
 
 def compute_average_markov_probs(markov_n, markov_table, start_i, seq):
